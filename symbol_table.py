@@ -30,8 +30,14 @@ class SymbolTable():
         self.symbols = predef_table
         self.next_address = 16
 
-    def add_entry(self, s):
-        self.symbols[s] = self.next_address
+    def add_entry(self, s, address=None):
+        if address:
+            a = address
+        else:
+            a = self.next_address
+            self.next_address += 1
+
+        self.symbols[s] = a
 
     def contains(self, s):
         return True if s in self.symbols else False

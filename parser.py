@@ -75,7 +75,8 @@ class Parser():
         self.dest = self.current_line[:eq_sign_index] if eq_sign_index else ""
         self.comp = self.current_line[eq_sign_index +
                                       1:semi_colon_index] if eq_sign_index else self.current_line[:semi_colon_index]
-        self.jump = self.current_line[semi_colon_index:] if semi_colon_index else ""
+        self.jump = self.current_line[semi_colon_index +
+                                      1:] if semi_colon_index else ""
 
     def parse_l_command(self):
         self.symbol = self.current_line[1:-1]
@@ -88,11 +89,11 @@ class Parser():
                 filtered_cmd = filtered_cmd[:-1]
                 break
             # check if is a space or newline
-            if not self._is_space_or_newline(c):
+            if not self._is_white(c):
                 filtered_cmd += c
         return filtered_cmd
 
-    def _is_space_or_newline(self, c):
-        if c == " " or c == "\n" or c == "\r":
+    def _is_white(self, c):
+        if c == " " or c == "\n" or c == "\r" or c == "\t":
             return True
         return False
