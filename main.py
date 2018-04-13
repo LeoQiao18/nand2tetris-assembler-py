@@ -1,6 +1,6 @@
 import sys
 from os.path import basename, splitext
-from parser import Parser
+from asm_parser import Parser
 import code
 from symbol_table import SymbolTable
 
