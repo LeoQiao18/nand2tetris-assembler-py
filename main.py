@@ -1,6 +1,8 @@
 import sys
 from os.path import basename, splitext
 from parser import Parser
+import code
+from symbol_table import SymbolTable
 
 
 def root_fname(f):
@@ -8,21 +10,10 @@ def root_fname(f):
 
 
 if __name__ == "__main__":
-    asm_name = sys.argv[1]
+    asm_fname = sys.argv[1]
 
-    psr = Parser(asm_name)
+    # Initialization
 
-    # open and read .asm file
-    with open(asm_name) as asm:
-        bin_fname = root_fname(asm) + ".hack"
+    # First Pass: symbol table, hack line count
 
-        # create and write to .hack file
-        with open(bin_fname, "w") as hack:
-            current_line = asm.readline()
-
-            # keep compiling until EOF in .asm file
-            while current_line != "":
-                binary = compile_cmd(current_line) + "\n"
-                hack.write(binary)
-
-    print("Assembly process completed")
+    # Second Pass: parsing, writing to .hack file

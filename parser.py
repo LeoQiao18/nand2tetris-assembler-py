@@ -1,10 +1,11 @@
 class Parser():
     def __init__(self, fname):
         self.f = open(fname)
+        self.initialize()
+
+    def initialize(self):
         self.current_line = None
         self.next_line = self.f.readline()
-
-        self.command_type = None
 
         # A_COMMAND or L_COMMAND
         self.symbol = None
@@ -14,16 +15,34 @@ class Parser():
         self.comp = None
         self.jump = None
 
+    def reset(self):
+        # A_COMMAND or L_COMMAND
+        self.symbol = None
+
+        # C_COMMAND
+        self.dest = None
+        self.comp = None
+        self.jump = None
+
+    def restart(self):
+        self.f.seek(0)
+        self.initialize()
+
+    def end(self):
+        self.f.close()
+
+    # ------PARSING-RELATED METHODS------
     def has_more_commands(self):
         return bool(self.next_line)
 
     def advance(self):
-        self.current_line = self.next_line
-        self.next_line = self._rm_extra(self.f.readline())
-        self.command_type = self.test_command_type()
-        self.parse_command()
+        self.reset()
+        self.current_line = self._rm_extra(self.next_line)
+        self.next_line = self.f.readline()
+        if not self.current_line:
+            self.advance()
 
-    def test_command_type(self):
+    def command_type(self):
         if self.current_line:
             if self.current_line[0] == "@":
                 return "A_COMMAND"
@@ -33,11 +52,12 @@ class Parser():
         return None
 
     def parse_command(self):
-        if self.command_type == "A_COMMAND":
+        cmd_type = self.command_type()
+        if cmd_type == "A_COMMAND":
             self.parse_a_command()
-        if self.command_type == "C_COMMAND":
+        if cmd_type == "C_COMMAND":
             self.parse_c_command()
-        if self.command_type == "L_COMMAND":
+        if cmd_type == "L_COMMAND":
             self.parse_l_command()
 
     def parse_a_command(self):
@@ -52,16 +72,13 @@ class Parser():
             if c == ";":
                 semi_colon_index = i
 
-        self.dest = self.current_line[:eq_sign_index] if eq_sign_index else None
+        self.dest = self.current_line[:eq_sign_index] if eq_sign_index else ""
         self.comp = self.current_line[eq_sign_index +
                                       1:semi_colon_index] if eq_sign_index else self.current_line[:semi_colon_index]
-        self.jump = self.current_line[semi_colon_index:] if semi_colon_index else None
+        self.jump = self.current_line[semi_colon_index:] if semi_colon_index else ""
 
     def parse_l_command(self):
         self.symbol = self.current_line[1:-1]
-
-    def end(self):
-        self.f.close()
 
     def _rm_extra(self, line):
         filtered_cmd = ""
