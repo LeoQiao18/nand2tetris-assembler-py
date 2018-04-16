@@ -82,4 +82,3 @@ if __name__ == "__main__":
 
     # complete
     print("Assembly process complete!!!")
-·
