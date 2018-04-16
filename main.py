@@ -77,5 +77,9 @@ if __name__ == "__main__":
                 # write to .hack file
                 hack.write(hack_line + "\n")
 
+        # close the .asm file
+        psr.end()
+
     # complete
     print("Assembly process complete!!!")
+·
